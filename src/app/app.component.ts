@@ -17,7 +17,8 @@ import { ProfileComponent } from "./pages/profile/profile.component";
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    MenuComponent
+    MenuComponent,
+    RouterLink
 ], 
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
