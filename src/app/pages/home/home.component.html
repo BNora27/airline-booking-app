@@ -1,0 +1,41 @@
+<div class="hero">
+    <div class="hero-content">
+      <h1>Book Your Next Adventure</h1>
+      <p>Find the best deals on flights worldwide.</p>
+  
+      <form [formGroup]="searchForm" (ngSubmit)="searchFlights()" class="search-form">
+        <mat-form-field appearance="outline">
+          <mat-label>From</mat-label>
+          <input matInput formControlName="from">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>To</mat-label>
+          <input matInput formControlName="to">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Departure</mat-label>
+          <input matInput type="date" formControlName="departure">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Return</mat-label>
+          <input matInput type="date" formControlName="return">
+        </mat-form-field>
+  
+        <button mat-flat-button color="primary" type="submit">Search Flights</button>
+      </form>
+    </div>
+  </div>
+  
+  <section class="featured">
+    <h2>Featured Destinations</h2>
+    <div class="destinations">
+      <div class="card" *ngFor="let dest of ['Paris', 'New York', 'Tokyo']">
+        <h3>{{ dest }}</h3>
+        <p>Special offers from your city!</p>
+      </div>
+    </div>
+  </section>
+  

@@ -1,0 +1,14 @@
+<div class="flight-list">
+  <h2>Available Flights</h2>
+  <ng-container *ngIf="flights.length; else noFlights">
+    <app-flight-card
+      *ngFor="let flight of flights"
+      [flight]="flight"
+      (book)="onFlightBooked($event)">
+    </app-flight-card>
+  </ng-container>
+
+  <ng-template #noFlights>
+    <p>No flights available.</p>
+  </ng-template>
+</div>

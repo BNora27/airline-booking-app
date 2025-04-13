@@ -1,0 +1,51 @@
+.profile-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  
+    h2, h3 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+  
+    .user-info {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+  
+      p {
+        margin: 0.3rem 0;
+      }
+    }
+  
+    .flight-card {
+      background: #fefefe;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+  
+      h4 {
+        margin-bottom: 0.5rem;
+        color: #37474f;
+      }
+  
+      p {
+        margin: 0.3rem 0;
+      }
+  
+      ul {
+        padding-left: 1.2rem;
+        margin: 0.5rem 0;
+      }
+  
+      button {
+        margin-top: 0.8rem;
+      }
+    }
+  }
+  

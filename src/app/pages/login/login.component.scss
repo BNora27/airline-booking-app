@@ -1,0 +1,36 @@
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .register-redirect {
+    margin-top: 2rem;
+    text-align: center;
+
+    p {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 1.5rem 1rem;
+
+    .login-form {
+      gap: 1rem;
+    }
+
+    .register-redirect {
+      font-size: 0.95rem;
+    }
+  }
+}
