@@ -33,8 +33,8 @@
         <mat-card-title>{{ bf.flight.flightNo }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>Departure: {{ bf.flight.departure }}</p>
-        <p>Arrival: {{ bf.flight.return }}</p>
+        <p>Departure: {{ bf.flight.departure | date: "mediumDate"}}</p>
+        <p>Arrival: {{ bf.flight.return | date: "mediumDate"}}</p>
         <p>Booking ID: {{ bf.booking.id }}</p>
         <button mat-raised-button color="warn" (click)="deleteBooking(bf.booking.id)">
           Cancel Booking
