@@ -2,7 +2,7 @@
 
 Választott téma: 	Repülőjegy lefoglaló oldal
 
-Tesztelni a logint-:
+Tesztelni a login-t:
 
 -  username: testElek
 
