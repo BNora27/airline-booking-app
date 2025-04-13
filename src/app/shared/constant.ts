@@ -93,6 +93,14 @@ export const DUMMY_BOOKINGS: Booking[] = [
     totalPrice: 90000
   },
   {
+    id: 'b001',
+    userId: 'u000',
+    flightId: 'f001',
+    bookingDate: '2025-04-10T12:00:00',
+    passengers: DUMMY_PASSENGERS,
+    totalPrice: 90000
+  },
+  {
     id: 'b002',
     userId: 'u002',
     flightId: 'f002',

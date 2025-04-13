@@ -26,4 +26,27 @@
       </div>
     </mat-card-content>
   </mat-card>
+
+  <div *ngIf="bookedFlights.length > 0">
+    <mat-card *ngFor="let bf of bookedFlights">
+      <mat-card-header>
+        <mat-card-title>{{ bf.flight.flightNo }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Departure: {{ bf.flight.departure }}</p>
+        <p>Arrival: {{ bf.flight.return }}</p>
+        <p>Booking ID: {{ bf.booking.id }}</p>
+        <button mat-raised-button color="warn" (click)="deleteBooking(bf.booking.id)">
+          Cancel Booking
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
+
+
+
+<div *ngIf="bookedFlights.length === 0">
+  <p>No bookings found for this user.</p>
+</div>
+
