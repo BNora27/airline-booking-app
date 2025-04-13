@@ -53,7 +53,9 @@ export class LoginComponent implements OnDestroy {
     this.loadingService.loadingWithPromise(username, password).then((_: boolean) => {
       console.log("This executed!");
       localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigateByUrl('/profile');
+      this.router.navigateByUrl('/profile').then(() => {
+        window.location.reload();
+      })
     }).catch(error => {
       this.isLoading = false;
       this.showLoginForm = true;

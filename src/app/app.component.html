@@ -23,6 +23,7 @@
       <!-- Navigation Links -->
       <span class="spacer"></span>
       <ng-container *ngIf="isLoggedIn; else loggedOut">
+        
         <button mat-stroked-button routerLink="/home" routerLinkActive="active-link">Home</button>
         <button mat-button routerLink="/profile" routerLinkActive="active-link">Profile</button>
         <button mat-button (click)="logout()">Logout</button>
