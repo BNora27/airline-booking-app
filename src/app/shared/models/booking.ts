@@ -1,10 +1,10 @@
-import { Passenger } from "./passenger";
+import { Flight } from "./flight";
+import { User } from "./user";
 
 export interface Booking {
     id: string;
-    userId: string;
-    flightId: string;
-    bookingDate: string;
-    passengers: Passenger[];
-    totalPrice: number;
+    passenger: User;
+    flight: Flight;
+    seatNumber: number;
+    bookingDate: Date;
 }

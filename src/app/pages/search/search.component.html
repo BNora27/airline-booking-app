@@ -1,0 +1,56 @@
+<div class="hero">
+    <div class="hero-content">
+      <h1>Book Your Next Adventure</h1>
+      <p>Find the best deals on flights worldwide.</p>
+  
+      <form [formGroup]="searchForm" (ngSubmit)="searchFlights()" class="search-form">
+        <mat-form-field appearance="outline">
+          <mat-label>From</mat-label>
+          <input matInput formControlName="from">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>To</mat-label>
+          <input matInput formControlName="to">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Departure</mat-label>
+          <input matInput type="date" formControlName="departure">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Arrival</mat-label>
+          <input matInput type="date" formControlName="arrival">
+        </mat-form-field>
+  
+        <button mat-flat-button color="primary" type="submit">Search Flights</button>
+      </form>
+    </div>
+  </div>
+  
+<section class="results" *ngIf="flights.length > 0">
+  <h2>Available Flights</h2>
+  <mat-card *ngFor="let flight of flights" class="flight-card">
+    <mat-card-title>{{ flight.flightNo }}: {{ flight.from }} → {{ flight.to }}</mat-card-title>
+    <mat-card-content>
+      <p>Departure: {{ flight.departure | date:'shortDate' }}</p>
+      <p>Arrival: {{ flight.arrival | date:'shortDate' }}</p>
+      <p>Price: ${{ flight.price }}</p>
+      <p>Seats Available: {{ flight.seatsAvailable }}</p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button color="primary"
+              [disabled]="!isLoggedIn"
+              (click)="bookFlight(flight)">
+        Book Flight
+      </button>
+
+      <p *ngIf="!isLoggedIn" class="login-warning">
+        You must be logged in to book a flight.
+      </p>
+    </mat-card-actions>
+  </mat-card>
+</section>
+  

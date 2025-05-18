@@ -1,11 +1,10 @@
 export interface Flight {
     id: string;
-    airline: string;
     flightNo: string;
+    departure: Date;
+    arrival: Date;
     from: string;
     to: string;
-    departure: string;
-    return: string;
-    price: number;
     seatsAvailable: number;
+    price: number;
 }

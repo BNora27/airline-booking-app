@@ -1,42 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatButtonModule,
-    MatIconModule
+    RouterLink
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-  searchForm: FormGroup;
+export class HomeComponent implements OnInit{
+  isLoggedIn = false;
+  isMobile = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    this.searchForm = this.fb.group({
-      from: [''],
-      to: [''],
-      departure: [''],
-      return: ['']
-    });
+  constructor(private router: Router) {  }
+
+  ngOnInit(): void {
+    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    this.isMobile = window.innerWidth < 768;
   }
 
-  searchFlights() {
-    const { from, to, departure, return: returnDate } = this.searchForm.value;
-    this.router.navigate(['/flight-list'], {
-      queryParams: { from, to, departure, return: returnDate }
-    });
+  changePage() {
+    this.router.navigateByUrl("/flight-list");
   }
 }

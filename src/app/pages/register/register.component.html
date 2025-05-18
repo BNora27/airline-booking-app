@@ -1,68 +1,73 @@
 <div class="register-container">
-    <h1>Create Account</h1>
+  <h1>Create Account</h1>
   
-    <div *ngIf="isLoading" class="loading-container">
+  @if (isLoading) {
+    <div class="loading-container">
       <h2>Registration in progress</h2>
       <mat-spinner diameter="50"></mat-spinner>
       <p>Please wait...</p>
     </div>
+  }
   
-    <form *ngIf="showForm" [formGroup]="registerForm" (ngSubmit)="register()" class="register-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" />
-        <mat-icon matSuffix>person</mat-icon>
-      </mat-form-field>
-  
+  @if (showForm) {
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="register-form">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" type="email" />
+        <input matInput type="email" formControlName="email">
         <mat-icon matSuffix>email</mat-icon>
+        @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+          <mat-error>Please enter a valid email address</mat-error>
+        }
       </mat-form-field>
-  
+      
       <div class="name-row" formGroupName="name">
         <mat-form-field appearance="outline">
           <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstname" />
+          <input matInput formControlName="firstname">
           <mat-icon matSuffix>person</mat-icon>
+          @if (registerForm.get('name.firstname')?.invalid && registerForm.get('name.firstname')?.touched) {
+            <mat-error>First name must be at least 2 characters</mat-error>
+          }
         </mat-form-field>
-  
+        
         <mat-form-field appearance="outline">
           <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastname" />
+          <input matInput formControlName="lastname">
           <mat-icon matSuffix>person</mat-icon>
+          @if (registerForm.get('name.lastname')?.invalid && registerForm.get('name.lastname')?.touched) {
+            <mat-error>Last name must be at least 2 characters</mat-error>
+          }
         </mat-form-field>
       </div>
-  
+      
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password" />
+        <input matInput type="password" formControlName="password">
         <mat-icon matSuffix>lock</mat-icon>
+        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+          <mat-error>Password must be at least 6 characters long</mat-error>
+        }
       </mat-form-field>
-  
+      
       <mat-form-field appearance="outline">
         <mat-label>Confirm Password</mat-label>
-        <input matInput formControlName="rePassword" type="password" />
+        <input matInput type="password" formControlName="rePassword">
         <mat-icon matSuffix>lock</mat-icon>
+        @if (registerForm.get('rePassword')?.value !== registerForm.get('password')?.value) {
+          <mat-error>Passwords do not match</mat-error>
+        }
       </mat-form-field>
-  
-      <mat-form-field appearance="outline">
-        <mat-label>Phone Number</mat-label>
-        <input matInput formControlName="phoneNumber" />
-        <mat-icon matSuffix>phone</mat-icon>
-        <mat-error *ngIf="registerForm.get('phoneNumber')?.hasError('invalidPhone')">
-          Phone number must be in international format (e.g., +36301234567)
-        </mat-error>
-      </mat-form-field>
-  
+      
+      @if (registerError) {
+        <div class="error-message">
+          {{ registerError }}
+        </div>
+      }
+      
       <div class="buttons-row">
-        <button mat-flat-button color="primary" type="submit">Register</button>
-        <button mat-flat-button [routerLink]="['/login']" type="button">Already have an account?</button>
-      </div>
-  
-      <div *ngIf="registerError" class="error-message">
-        {{ registerError }}
+        <button mat-flat-button color="primary" type="submit" [disabled]="registerForm.invalid">Register</button>
+        <button mat-flat-button [routerLink]="['/login']">Already have an account?</button>
       </div>
     </form>
-  </div>
-  
+  }
+</div>

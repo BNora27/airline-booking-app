@@ -1,17 +1,18 @@
 import { Routes } from '@angular/router';
-import { FlightListComponent } from './pages/flight-list/flight-list.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { SearchComponent } from './pages/search/search.component';
+import { authGuard, publicGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
-    { path: 'flight-list', component: FlightListComponent},
-    { path: 'profile', component: ProfileComponent},
+    { path: 'profile', component: ProfileComponent, canActivate: [authGuard]},
+    { path: 'search', component: SearchComponent, canActivate: [publicGuard]},
     { path: 'home', component: HomeComponent},
-    { path: 'login', component: LoginComponent},
-    { path: 'register', component: RegisterComponent},
+    { path: 'login', component: LoginComponent, canActivate: [publicGuard]},
+    { path: 'register', component: RegisterComponent, canActivate: [publicGuard]},
     { path: '', component: HomeComponent},
     { path: '**', component: PageNotFoundComponent},
 ];

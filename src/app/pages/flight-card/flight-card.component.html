@@ -1,9 +1,0 @@
-<div class="flight-card">
-    <h3>{{ flight.airline }} ({{ flight.flightNo }})</h3>
-    <p><strong>From:</strong> {{ flight.from }}</p>
-    <p><strong>To:</strong> {{ flight.to }}</p>
-    <p><strong>Departure:</strong> {{ flight.departure | date:'mediumDate'}}</p>
-    <p><strong>Return:</strong> {{ flight.return | date:'mediumDate'}}</p>
-    <p class="price">{{ flight.price | flightPrice:'HUF' }}</p>
-    <button mat-flat-button color="primary" (click)="bookFlight()">Book</button>
-  </div>

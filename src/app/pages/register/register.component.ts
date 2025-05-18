@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { User } from '../../shared/models/user';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -34,14 +35,9 @@ import { User } from '../../shared/models/user';
 })
 export class RegisterComponent {
   registerForm = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(6)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     rePassword: new FormControl('', [Validators.required]),
-    phoneNumber: new FormControl('', [
-      Validators.required,
-      this.phoneValidator
-    ]),
     name: new FormGroup({
       firstname: new FormControl('', [Validators.required, Validators.minLength(2)]),
       lastname: new FormControl('', [Validators.required, Validators.minLength(2)])
@@ -52,7 +48,9 @@ export class RegisterComponent {
   showForm = true;
   registerError = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService) {}
 
   register(): void {
     if (this.registerForm.invalid) {
@@ -60,42 +58,54 @@ export class RegisterComponent {
       return;
     }
 
-    const { password, rePassword } = this.registerForm.value;
-
+    const password = this.registerForm.get('password')?.value;
+    const rePassword = this.registerForm.get('rePassword')?.value;
+    
     if (password !== rePassword) {
-      this.registerError = 'Passwords do not match.';
+      this.registerError = 'The passwords do not match.';
       return;
     }
 
     this.isLoading = true;
     this.showForm = false;
 
-    const newUser: User = {
-      id: generateId(),
-      username: this.registerForm.value.username || '',
-      email: this.registerForm.value.email || '',
-      password: password || '',
-      phone: this.registerForm.value.phoneNumber || '',
+    const userData: Partial<User> = {
       name: {
         firstname: this.registerForm.value.name?.firstname || '',
         lastname: this.registerForm.value.name?.lastname || ''
-      }
+      },
+      email: this.registerForm.value.email || '',
     };
 
-    console.log('Registered user:', newUser);
+    const email = this.registerForm.value.email || '';
+    const pw = this.registerForm.value.password || '';
 
-    setTimeout(() => {
-      this.router.navigateByUrl('/home');
-    }, 2000);
+    this.authService.register(email, pw, userData)
+      .then(userCredential => {
+        console.log('Registration succesful:', userCredential.user);
+        this.authService.updateLoginStatus(true);
+        this.router.navigateByUrl('/home');
+      })
+      .catch(error => {
+        console.error('Regisztrációs hiba:', error);
+        this.isLoading = false;
+        this.showForm = true;
+        
+        switch(error.code) {
+          case 'auth/email-already-in-use':
+            this.registerError = 'This email already in use.';
+            break;
+          case 'auth/invalid-email':
+            this.registerError = 'Invalid email.';
+            break;
+          case 'auth/weak-password':
+            this.registerError = 'The password is too weak. Use at least 6 characters.';
+            break;
+          default:
+            this.registerError = 'An error has occurred during registration. Please try again later.';
+        }
+      });
   }
 
-  phoneValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    const regex = /^\+\d{11}$/; // E.g. +36301234567
-    return regex.test(value) ? null : { invalidPhone: true };
-  }
 }
 
-function generateId(): string {
-  return 'id-' + Math.random().toString(36).substr(2, 9);
-}

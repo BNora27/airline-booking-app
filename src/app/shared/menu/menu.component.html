@@ -4,18 +4,27 @@
     <span matListItemTitle>Home</span>
   </a>
 
-  <a *ngIf="isLoggedIn" mat-list-item routerLink="/profile" routerLinkActive="active-list-item" (click)="closeMenu()">
-    <mat-icon matListItemIcon>person</mat-icon>
-    <span matListItemTitle>Profile</span>
+  <a mat-list-item routerLink="/search" routerLinkActive="active-list-item" (click)="closeMenu()">
+    <mat-icon matListItemIcon>search</mat-icon>
+    <span matListItemTitle>Search Flights</span>
   </a>
 
-  <a *ngIf="!isLoggedIn" mat-list-item routerLink="/login" routerLinkActive="active-list-item" (click)="closeMenu()">
-    <mat-icon matListItemIcon>login</mat-icon>
-    <span matListItemTitle>Login</span>
-  </a>
-
-  <a *ngIf="isLoggedIn" mat-list-item (click)="logout()">
-    <mat-icon matListItemIcon>logout</mat-icon>
-    <span matListItemTitle>Logout</span>
-  </a>
+  @if (isLoggedIn) {
+    <a mat-list-item routerLink="/profile" routerLinkActive="active-list-item" (click)="closeMenu()">
+      <mat-icon matListItemIcon>person</mat-icon>
+      <span matListItemTitle>Profile</span>
+    </a>
+  }
+  @if (!isLoggedIn) {
+    <a mat-list-item routerLink="/login" routerLinkActive="active-list-item" (click)="closeMenu()">
+      <mat-icon matListItemIcon>login</mat-icon>
+      <span matListItemTitle>Login</span>
+    </a>
+  }
+  @if (isLoggedIn) {
+    <a mat-list-item (click)="logout()">
+      <mat-icon matListItemIcon>logout</mat-icon>
+      <span matListItemTitle>Logout</span>
+    </a>
+  }
 </mat-nav-list>

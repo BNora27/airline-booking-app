@@ -1,52 +1,57 @@
-<div class="profile-container">
+<div class="profile-container" *ngIf="user">
   <mat-card>
     <mat-card-header>
       <mat-card-title>User Profile</mat-card-title>
-      <mat-form-field appearance="outline">
-        <mat-label>Select Profile</mat-label>
-        <mat-select [value]="selectedIndex" (selectionChange)="reload($event.value)">
-          <mat-option *ngFor="let profile of UserObject; let i = index" [value]="i">{{profile.username}}</mat-option>
-        </mat-select>
-      </mat-form-field>
     </mat-card-header>
 
     <mat-card-content>
       <div class="profile-info">
-        <div class="user-details">
-          <h3 class="user-name">{{UserObject[selectedIndex].username}}</h3>
-          <div class="user-email">
-            <mat-icon>email</mat-icon>
-            <span>{{UserObject[selectedIndex].email}}</span>
-          </div>
-          <div class="user-phone">
-            <mat-icon>phone</mat-icon>
-            <span>{{UserObject[selectedIndex].phone}}</span>
-          </div>
-        </div>
+        <h3>{{ user.name.firstname }} {{ user.name.lastname }}</h3>
+        <p><mat-icon>email</mat-icon> {{ user.email }}</p>
+        <p><mat-icon>assignment_ind</mat-icon> Passport No: {{ user.passportNumber }}</p>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="bookedFlights.length > 0">
-    <mat-card *ngFor="let bf of bookedFlights">
+  <div *ngIf="bookings.length > 0" class="bookings-list">
+    <h2>Your Bookings</h2>
+
+    <mat-card *ngFor="let booking of bookings" class="booking-card">
       <mat-card-header>
-        <mat-card-title>{{ bf.flight.flightNo }}</mat-card-title>
+        <mat-card-title>{{ booking.flight.flightNo }}: {{ booking.flight.from }} → {{ booking.flight.to }}</mat-card-title>
       </mat-card-header>
+
       <mat-card-content>
-        <p>Departure: {{ bf.flight.departure | date: "mediumDate"}}</p>
-        <p>Arrival: {{ bf.flight.return | date: "mediumDate"}}</p>
-        <p>Booking ID: {{ bf.booking.id }}</p>
-        <button mat-raised-button color="warn" (click)="deleteBooking(bf.booking.id)">
+        <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+        <p><strong>Seat Number:</strong> {{ booking.seatNumber }}</p>
+        <p><strong>Booking Date:</strong> {{ booking.bookingDate | date:'mediumDate' }}</p>
+
+        <p><strong>Departure:</strong> {{ booking.flight.departure | date:'short' }}</p>
+        <p><strong>Arrival:</strong> {{ booking.flight.arrival | date:'short' }}</p>
+
+        <div *ngIf="getPaymentForBooking(booking.id) as payment" class="payment-info">
+          <h4>Payment Details</h4>
+          <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+          <p><strong>Method:</strong> {{ payment.method }}</p>
+          <p><strong>Status:</strong> 
+            <span [ngClass]="{
+              'completed': payment.status === 'Completed',
+              'pending': payment.status === 'Pending',
+              'failed': payment.status === 'Failed'
+            }">{{ payment.status }}</span>
+          </p>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="warn" (click)="deleteBooking(booking.id)">
           Cancel Booking
         </button>
-      </mat-card-content>
+      </mat-card-actions>
     </mat-card>
   </div>
+
+  <div *ngIf="bookings.length === 0">
+    <p>No bookings found for this user.</p>
+  </div>
 </div>
-
-
-
-<div *ngIf="bookedFlights.length === 0">
-  <p>No bookings found for this user.</p>
-</div>
-
