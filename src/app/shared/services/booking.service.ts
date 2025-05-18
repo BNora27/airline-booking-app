@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, deleteDoc, doc, collectionData, query, where } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, deleteDoc, doc, collectionData, query, where, Timestamp } from '@angular/fire/firestore';
 import { Booking } from '../models/booking';
 import { Observable } from 'rxjs';
 
@@ -19,10 +19,15 @@ export class BookingService {
    * @param booking The booking object to be created (excluding `id`).
    */
   async createBooking(booking: Omit<Booking, 'id'>): Promise<void> {
+    const parsedDate = booking.bookingDate
+  ? new Date(booking.bookingDate)
+  : null;
     try {
       await addDoc(this.bookingsCollection, {
         ...booking,
-        bookingDate: booking.bookingDate || new Date() // Ensure proper Date object
+        bookingDate: parsedDate && !isNaN(parsedDate.getTime())
+    ? Timestamp.fromDate(parsedDate)
+    : Timestamp.now()
       });
     } catch (error) {
       console.error('Failed to create booking:', error);

@@ -17,6 +17,7 @@ import { UserService } from '../../shared/services/user.service';
 import { Flight } from '../../shared/models/flight';
 import { FlightService } from '../../shared/services/flight.service';
 import { CurrencyCodePipe } from '../../shared/pipes/currency-code.pipe';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-profile',
@@ -85,6 +86,12 @@ export class ProfileComponent implements OnInit {
     })
   ).subscribe(({ bookings, payments, flights }) => {
     this.bookings = bookings;
+    this.bookings = this.bookings.map(b => ({
+  ...b,
+  bookingDate: b.bookingDate instanceof Timestamp
+          ? b.bookingDate.toDate()
+          : new Date(b.bookingDate)
+  }));
     this.payments = payments;
     this.flights = flights;
   });

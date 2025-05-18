@@ -4,9 +4,6 @@
     Book your flights efficiently
   </p>
 
-  <button mat-flat-button color="primary" class="tasks" (click)="changePage()">
-    View My Flights
-  </button>
 
   @if (!isLoggedIn) {
     <button mat-flat-button color="accent" [routerLink]="['/login']" class="tasks">
