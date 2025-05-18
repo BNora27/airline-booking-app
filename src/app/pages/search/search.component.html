@@ -36,7 +36,7 @@
     <mat-card-content>
       <p>Departure: {{ flight.departure | date:'shortDate' }}</p>
       <p>Arrival: {{ flight.arrival | date:'shortDate' }}</p>
-      <p>Price: ${{ flight.price }}</p>
+      <p>Price: {{ flight.price | currencyCode: 'US'}}</p>
       <p>Seats Available: {{ flight.seatsAvailable }}</p>
     </mat-card-content>
 

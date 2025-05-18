@@ -3,8 +3,8 @@ import { User } from "./user";
 
 export interface Booking {
     id: string;
-    passenger: User;
-    flight: Flight;
+    passengerId: string;
+    flightId: string;
     seatNumber: number;
     bookingDate: Date;
 }

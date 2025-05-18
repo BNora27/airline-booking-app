@@ -12,8 +12,11 @@ import { Payment } from '../../shared/models/payment';
 import { AuthService } from '../../shared/services/auth.service';
 import { BookingService } from '../../shared/services/booking.service';
 import { PaymentsService } from '../../shared/services/payments.service';
-import { switchMap, of, from, map } from 'rxjs';
+import { switchMap, of, from, map, forkJoin } from 'rxjs';
 import { UserService } from '../../shared/services/user.service';
+import { Flight } from '../../shared/models/flight';
+import { FlightService } from '../../shared/services/flight.service';
+import { CurrencyCodePipe } from '../../shared/pipes/currency-code.pipe';
 
 @Component({
   selector: 'app-profile',
@@ -25,52 +28,68 @@ import { UserService } from '../../shared/services/user.service';
     MatIconModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatProgressBarModule]
+    MatProgressBarModule, CurrencyCodePipe]
 })
 export class ProfileComponent implements OnInit {
   user!: AppUser;
   bookings: Booking[] = [];
   payments: Payment[] = [];
+  flights: Flight[] = [];
 
   constructor(
     private authService: AuthService,
     private bookingService: BookingService,
     private paymentsService: PaymentsService,
     private userService: UserService,
+    private flightService: FlightService
   ) { }
 
   ngOnInit(): void {
   this.authService.isLoggedIn().pipe(
     switchMap((firebaseUser: FirebaseUser | null) => {
       if (!firebaseUser) {
-        return of({ user: null, bookings: [], payments: [] });
+        return of({ user: null, bookings: [], payments: [], flights: [] });
       }
+
       return from(this.userService.getUserById(firebaseUser.uid)).pipe(
         switchMap((user: AppUser | null) => {
           if (!user) {
-            return of({ user: null, bookings: [], payments: [] });
+            return of({ user: null, bookings: [], payments: [], flights: [] });
           }
+
           this.user = user;
+
           return from(this.bookingService.getBookingsByUserId(user.id)).pipe(
             switchMap((bookings: Booking[]) => {
               this.bookings = bookings;
               const bookingIds = bookings.map(b => b.id);
+              const flightIds = bookings.map(b => b.flightId); // feltételezve, hogy van ilyen mező
+
               return this.paymentsService.getPaymentsByBookingIds(bookingIds).pipe(
-                map((payments: Payment[]) => ({
-                  bookings,
-                  payments
-                }))
+                switchMap((payments: Payment[]) => {
+                  // Lekérjük az összes flight-ot párhuzamosan
+                  const flightRequests = flightIds.map(flightId => this.flightService.getFlightById(flightId));
+                  return forkJoin(flightRequests).pipe(
+                    map((flights: (Flight | null)[]) => ({
+                      bookings,
+                      payments,
+                      flights: flights.filter((f): f is Flight => f !== null) // kiszűrjük a null értékeket
+                    }))
+                  );
+                })
               );
             })
           );
         })
       );
     })
-  ).subscribe(({ bookings, payments }) => {
+  ).subscribe(({ bookings, payments, flights }) => {
     this.bookings = bookings;
     this.payments = payments;
+    this.flights = flights;
   });
 }
+
 
 
   deleteBooking(bookingId: string): void {
@@ -86,5 +105,10 @@ export class ProfileComponent implements OnInit {
   getPaymentForBooking(bookingId: string): Payment | undefined {
     return this.payments.find(p => p.bookingId === bookingId);
   }
+
+  getFlightForBooking(booking: Booking): Flight | undefined {
+  return this.flights.find(f => f.id === booking.flightId);
+  }
+
 
 }

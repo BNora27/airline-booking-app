@@ -49,7 +49,7 @@ export class BookingService {
    */
   getBookingsByUserId(userId: string): Observable<Booking[]> {
     const bookingsRef = collection(this.firestore, 'Bookings');
-    const userQuery = query(bookingsRef, where('passenger.id', '==', userId));
+    const userQuery = query(bookingsRef, where('passengerId', '==', userId));
 
     return collectionData(userQuery, { idField: 'id' }) as Observable<Booking[]>;
   }

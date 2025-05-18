@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { AuthService } from './auth.service';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { from, of } from 'rxjs';
-import { Firestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { Firestore, doc, getDoc, collection, query, where, getDocs } from '@angular/fire/firestore';
 import { Booking } from '../models/booking';
 
 @Injectable({
@@ -62,7 +62,7 @@ export class UserService {
       const user = { ...userData, id: userId };
       
       const bookingsRef = collection(this.firestore, 'Bookings');
-      const q = query(bookingsRef, where('passenger.id', '==', userId));
+      const q = query(bookingsRef, where('passengerId', '==', userId));
       const bookingsSnapshot = await getDocs(q);
       
       const bookings: Booking[] = [];

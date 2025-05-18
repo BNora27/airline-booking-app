@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { collection, Firestore, getDocs, query, where } from 'firebase/firestore';
+import { } from '@angular/fire/database';
+import { collection, Firestore, where, query, getDocs, getDoc, doc, Timestamp } from '@angular/fire/firestore';
 import { Flight } from '../models/flight';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlightService {
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) { }
 
   async searchFlights(filters: {
     from?: string,
@@ -46,11 +47,47 @@ export class FlightService {
       flights.push({
         ...data,
         id: doc.id,
-        departure: new Date(data['departure']),
-        arrival: new Date(data['arrival'])
+        flightNo: data['flightNo'],
+        from: data['from'],
+        to: data['to'],
+        price: data['price'],
+        seatsAvailable: data['seatsAvailable'],
+        departure: data['departure'] instanceof Timestamp
+          ? data['departure'].toDate()
+          : new Date(data['departure']),
+        arrival: data['arrival'] instanceof Timestamp
+          ? data['arrival'].toDate()
+          : new Date(data['arrival']),
       } as Flight);
     });
 
     return flights;
+  }
+
+
+  async getFlightById(flightId: string): Promise<Flight | null> {
+    const flightDocRef = doc(this.firestore, 'Flights', flightId);
+    const flightSnapshot = await getDoc(flightDocRef);
+
+    if (flightSnapshot.exists()) {
+      const data = flightSnapshot.data();
+      return {
+        ...data,
+        id: flightSnapshot.id,
+        flightNo: data['flightNo'],
+        from: data['from'],
+        to: data['to'],
+        price: data['price'],
+        seatsAvailable: data['seatsAvailable'],
+        departure: data['departure'] instanceof Timestamp
+          ? data['departure'].toDate()
+          : new Date(data['departure']),
+        arrival: data['arrival'] instanceof Timestamp
+          ? data['arrival'].toDate()
+          : new Date(data['arrival']),
+      } as Flight;
+    }
+
+    return null;
   }
 }

@@ -13,16 +13,18 @@ import { AuthService } from '../../shared/services/auth.service';
 import { Booking } from '../../shared/models/booking';
 import { UserService } from '../../shared/services/user.service';
 import { BookingService } from '../../shared/services/booking.service';
+import { CurrencyCodePipe } from "../../shared/pipes/currency-code.pipe";
 
 @Component({
   selector: 'app-search',
+  standalone: true,
   imports: [CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-  MatCard, MatCardTitle, MatCardContent, MatCardActions],
+    MatCard, MatCardTitle, MatCardContent, MatCardActions, CurrencyCodePipe],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss'
 })
@@ -55,35 +57,35 @@ export class SearchComponent {
   }
 
   bookFlight(flight: Flight): void {
-  this.authService.currentUser.subscribe(firebaseUser => {
-    if (!firebaseUser) {
-      console.warn('User not logged in');
-      return;
-    }
-
-    // Fetch full user details from Firestore
-    const userId = firebaseUser.uid;
-
-    this.userService.getUserProfile().subscribe(userProfile => {
-      const user = userProfile.user;
-      if (!user) {
-        console.error('User data could not be retrieved');
+    this.authService.currentUser.subscribe(firebaseUser => {
+      if (!firebaseUser) {
+        console.warn('User not logged in');
         return;
       }
 
-      const booking: Omit<Booking, 'id'> = {
-        passenger: user,
-        flight: flight,
-        seatNumber: this.generateSeatNumber(),
-        bookingDate: new Date()
-      };
+      // Fetch full user details from Firestore
+      const userId = firebaseUser.uid;
 
-      this.bookingService.createBooking(booking)
-        .then(() => console.log('Booking successful'))
-        .catch(err => console.error('Booking failed', err));
+      this.userService.getUserProfile().subscribe(userProfile => {
+        const user = userProfile.user?.id;
+        if (!user) {
+          console.error('User data could not be retrieved');
+          return;
+        }
+
+        const booking: Omit<Booking, 'id'> = {
+          passengerId: user,
+          flightId: flight.id,
+          seatNumber: this.generateSeatNumber(),
+          bookingDate: new Date()
+        };
+
+        this.bookingService.createBooking(booking)
+          .then(() => console.log('Booking successful'))
+          .catch(err => console.error('Booking failed', err));
+      });
     });
-  });
-}
+  }
 
   private generateSeatNumber(): number {
     // This is just a basic seat assignment logic.
